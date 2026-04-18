@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; padding: 40px; }
+  h1 { color: #333; margin-bottom: 5px; }
+  h2 { color: #666; font-weight: normal; margin-bottom: 30px; }
+
+  .matrix-wrap { display: flex; align-items: center; gap: 40px; margin-bottom: 40px; }
+
+  .axis-label-top { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 8px; color: #333; }
+  .axis-label-left { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: bold; font-size: 16px; color: #333; margin-right: 8px; }
+
+  .matrix { display: grid; grid-template-columns: 120px 120px; grid-template-rows: 120px 120px; gap: 4px; }
+  .cell { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; padding: 10px; text-align: center; }
+  .cell .label { font-size: 13px; font-weight: bold; margin-bottom: 6px; }
+  .cell .count { font-size: 28px; font-weight: bold; }
+  .cell .desc { font-size: 11px; margin-top: 4px; color: rgba(255,255,255,0.85); }
+
+  .tp { background: #2ecc71; color: white; }
+  .fp { background: #e74c3c; color: white; }
+  .fn { background: #e67e22; color: white; }
+  .tn { background: #3498db; color: white; }
+
+  .col-headers { display: grid; grid-template-columns: 120px 120px; gap: 4px; margin-bottom: 4px; text-align: center; font-size: 13px; color: #555; font-weight: bold; }
+
+  .formulas { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
+  .formula-card { background: white; border-radius: 10px; padding: 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); min-width: 200px; text-align: center; }
+  .formula-card .metric { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
+  .formula-card .eq { font-size: 14px; color: #555; margin-bottom: 8px; font-family: monospace; }
+  .formula-card .result { font-size: 22px; font-weight: bold; }
+  .formula-card .question { font-size: 12px; color: #888; margin-top: 6px; font-style: italic; }
+
+  .meaning-table { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; max-width: 700px; width: 100%; margin-bottom: 30px; }
+  .meaning-table h3 { margin: 0; padding: 16px 24px; background: #333; color: white; font-size: 15px; }
+  .meaning-row { display: grid; grid-template-columns: 110px 1fr 1fr; border-bottom: 1px solid #f0f0f0; }
+  .meaning-row:last-child { border-bottom: none; }
+  .meaning-row.header { background: #f9f9f9; font-weight: bold; font-size: 12px; color: #888; text-transform: uppercase; }
+  .meaning-cell { padding: 14px 18px; font-size: 13px; color: #444; display: flex; align-items: center; }
+  .meaning-cell:not(:last-child) { border-right: 1px solid #f0f0f0; }
+  .metric-name { font-weight: bold; font-size: 14px; }
+  .metric-name.acc { color: #9b59b6; }
+  .metric-name.prec { color: #e74c3c; }
+  .metric-name.rec { color: #e67e22; }
+  .metric-name.auc { color: #2980b9; }
+
+  .accuracy .metric { color: #9b59b6; }
+  .accuracy .result { color: #9b59b6; }
+  .precision .metric { color: #e74c3c; }
+  .precision .result { color: #e74c3c; }
+  .recall .metric { color: #e67e22; }
+  .recall .result { color: #e67e22; }
+
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 3px; }
+
+  .scenario { background: white; border-radius: 10px; padding: 20px 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 500px; text-align: center; margin-bottom: 30px; }
+  .scenario h3 { margin: 0 0 10px; color: #333; }
+  .scenario p { color: #555; font-size: 14px; margin: 4px 0; }
+</style>
+</head>
+<body>
+
+<h1>Confusion Matrix</h1>
+<h2>Predicting hotel bookings — 100 users</h2>
+
+<div class="scenario">
+  <h3>The Scenario</h3>
+  <p>10 users actually booked &nbsp;|&nbsp; 90 did not</p>
+  <p>Model predicted YES for 15 users</p>
+  <p>8 of those 15 were real bookers</p>
+</div>
+
+<div class="matrix-wrap">
+  <div class="axis-label-left">MODEL PREDICTED</div>
+  <div>
+    <div class="axis-label-top">ACTUALLY BOOKED?</div>
+    <div class="col-headers">
+      <div>YES (booked)</div>
+      <div>NO (didn't book)</div>
+    </div>
+    <div class="matrix">
+      <div class="cell tp">
+        <div class="label">TRUE POSITIVE</div>
+        <div class="count">8</div>
+        <div class="desc">Said YES → actually YES</div>
+      </div>
+      <div class="cell fp">
+        <div class="label">FALSE POSITIVE</div>
+        <div class="count">7</div>
+        <div class="desc">Said YES → actually NO</div>
+      </div>
+      <div class="cell fn">
+        <div class="label">FALSE NEGATIVE</div>
+        <div class="count">2</div>
+        <div class="desc">Said NO → actually YES (missed!)</div>
+      </div>
+      <div class="cell tn">
+        <div class="label">TRUE NEGATIVE</div>
+        <div class="count">83</div>
+        <div class="desc">Said NO → actually NO</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#2ecc71"></div> Correct — caught a real booker</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div> Wrong — predicted YES but wasn't</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e67e22"></div> Missed — real booker we didn't catch</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3498db"></div> Correct — correctly said no</div>
+</div>
+
+<div class="formulas">
+  <div class="formula-card accuracy">
+    <div class="metric">Accuracy</div>
+    <div class="eq">(TP + TN) / total</div>
+    <div class="eq">(8 + 83) / 100</div>
+    <div class="result">91%</div>
+    <div class="question">"Was I right overall?"</div>
+  </div>
+  <div class="formula-card precision">
+    <div class="metric">Precision</div>
+    <div class="eq">TP / (TP + FP)</div>
+    <div class="eq">8 / (8 + 7)</div>
+    <div class="result">53%</div>
+    <div class="question">"When I said YES, was I right?"</div>
+  </div>
+  <div class="formula-card recall">
+    <div class="metric">Recall</div>
+    <div class="eq">TP / (TP + FN)</div>
+    <div class="eq">8 / (8 + 2)</div>
+    <div class="result">80%</div>
+    <div class="question">"Did I find all real bookers?"</div>
+  </div>
+</div>
+
+<div class="meaning-table">
+  <h3>What each metric means — in plain English & business terms</h3>
+  <div class="meaning-row header">
+    <div class="meaning-cell">Metric</div>
+    <div class="meaning-cell">In plain English</div>
+    <div class="meaning-cell">Business sense (Expedia example)</div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell"><span class="metric-name acc">Accuracy</span></div>
+    <div class="meaning-cell">Out of everyone, how many did I get right?</div>
+    <div class="meaning-cell">Misleading when data is imbalanced. 99% of users don't book → always saying "won't book" gives 99% accuracy but is useless.</div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell"><span class="metric-name prec">Precision</span></div>
+    <div class="meaning-cell">When I said YES, how often was I actually right?</div>
+    <div class="meaning-cell">Important when false alarms are costly. Sending 1000 discount emails to non-bookers wastes marketing budget → you want high precision.</div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell"><span class="metric-name rec">Recall</span></div>
+    <div class="meaning-cell">Out of all real YESes, how many did I catch?</div>
+    <div class="meaning-cell">Important when missing a real case is costly. Missing a real booker = lost revenue → you want high recall. Usually more important than precision for Expedia.</div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell"><span class="metric-name auc">ROC-AUC</span></div>
+    <div class="meaning-cell">If I pick one real booker and one non-booker, how often does my model rank the booker higher?</div>
+    <div class="meaning-cell">Best overall measure of model quality. 0.5 = random guessing, 1.0 = perfect. Use this instead of accuracy when classes are imbalanced.</div>
+  </div>
+</div>
+
+<div class="meaning-table">
+  <h3>Other important metrics</h3>
+  <div class="meaning-row header">
+    <div class="meaning-cell">Metric</div>
+    <div class="meaning-cell">Formula</div>
+    <div class="meaning-cell">When to use</div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell"><span class="metric-name prec">F1 Score</span></div>
+    <div class="meaning-cell">2 × (Precision × Recall) / (Precision + Recall)</div>
+    <div class="meaning-cell">When you can't choose between precision and recall — gives one balanced number. Good for imbalanced classes.</div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell"><span class="metric-name acc">MAE</span></div>
+    <div class="meaning-cell">Average of |actual − predicted|</div>
+    <div class="meaning-cell">Regression. Easy to explain — "on average, my revenue prediction is off by $200." Treats all errors equally.</div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell"><span class="metric-name rec">RMSE</span></div>
+    <div class="meaning-cell">√(average of (actual − predicted)²)</div>
+    <div class="meaning-cell">Regression. Penalizes large errors more than MAE. Use when big mistakes are especially bad.</div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell"><span class="metric-name auc">R²</span></div>
+    <div class="meaning-cell">1 − (model error / baseline error)</div>
+    <div class="meaning-cell">Regression. How much variance does the model explain? 1.0 = perfect, 0 = no better than predicting the mean, negative = worse than mean.</div>
+  </div>
+</div>
+
+<div class="meaning-table">
+  <h3>Which metric to use — quick guide</h3>
+  <div class="meaning-row">
+    <div class="meaning-cell" style="grid-column: 1/-1; display:block; padding: 16px 18px; font-size:13px; color:#444; line-height:1.9">
+      <b>Predicting a category (book / not book)?</b> → Classification<br>
+      &nbsp;&nbsp;→ Classes balanced: <b style="color:#9b59b6">Accuracy</b><br>
+      &nbsp;&nbsp;→ Classes imbalanced: <b style="color:#2980b9">ROC-AUC</b><br>
+      &nbsp;&nbsp;→ False alarms costly: <b style="color:#e74c3c">Precision</b><br>
+      &nbsp;&nbsp;→ Missing real cases costly: <b style="color:#e67e22">Recall</b><br>
+      &nbsp;&nbsp;→ Need one balanced number: <b style="color:#e74c3c">F1 Score</b><br><br>
+      <b>Predicting a number (revenue, clicks)?</b> → Regression<br>
+      &nbsp;&nbsp;→ Easy to explain to business: <b style="color:#9b59b6">MAE</b><br>
+      &nbsp;&nbsp;→ Big errors are especially bad: <b style="color:#e67e22">RMSE</b><br>
+      &nbsp;&nbsp;→ Overall model quality: <b style="color:#2980b9">R²</b>
+    </div>
+  </div>
+</div>
+
+<div class="meaning-table" style="margin-bottom:0">
+  <h3>Precision vs Recall — the tradeoff</h3>
+  <div class="meaning-row">
+    <div class="meaning-cell" style="grid-column: 1/-1; display:block; padding: 16px 18px; font-size:13px; color:#444; line-height:1.7">
+      <b>You can't maximize both at the same time.</b> Catching more real bookers (↑ recall) means more false alarms (↓ precision). The right balance depends on the business cost.<br><br>
+      → If <b>missing a real booker</b> is worse: optimize for <b style="color:#e67e22">Recall</b><br>
+      → If <b>wasting budget on non-bookers</b> is worse: optimize for <b style="color:#e74c3c">Precision</b><br><br>
+      For Expedia affiliate revenue prediction → <b style="color:#e67e22">Recall is usually more important.</b>
+    </div>
+  </div>
+</div>
+
+<div class="meaning-table">
+  <h3>ROC-AUC — Area Under the Curve</h3>
+  <div class="meaning-row">
+    <div class="meaning-cell" style="grid-column: 1/-1; display:block; padding: 20px 24px; font-size:13px; color:#444; line-height:1.8">
+      <b>ROC</b> = Receiver Operating Characteristic — the curve plotted at every threshold<br>
+      <b>AUC</b> = Area Under the Curve — one number summarizing the whole curve<br><br>
+      <b>The one-liner:</b> If I pick one real booker and one non-booker at random, what's the chance my model scores the booker higher?
+    </div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell" style="grid-column: 1/-1; display:block; padding: 10px 24px 24px;">
+      <canvas id="rocChart" width="500" height="320"></canvas>
+    </div>
+  </div>
+  <div class="meaning-row">
+    <div class="meaning-cell" style="grid-column: 1/-1; display:block; padding: 16px 24px; font-size:13px; color:#444; line-height:1.9">
+      <b>X axis (FPR)</b> — False Positive Rate: how many non-bookers did we wrongly flag?<br>
+      <b>Y axis (TPR)</b> — True Positive Rate (= Recall): how many real bookers did we catch?<br><br>
+      <span style="color:#2ecc71; font-weight:bold">● Perfect model</span> — hugs top-left corner, AUC = 1.0<br>
+      <span style="color:#3498db; font-weight:bold">● Good model</span> — bows toward top-left, AUC ~0.85<br>
+      <span style="color:#e74c3c; font-weight:bold">● Random model</span> — diagonal line, AUC = 0.5 (coin flip)<br><br>
+      <b>Rule of thumb:</b> 0.7+ decent &nbsp;|&nbsp; 0.8+ good &nbsp;|&nbsp; 0.9+ very good (check for leakage!)
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('rocChart');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const pad = { top: 30, right: 30, bottom: 50, left: 60 };
+const plotW = W - pad.left - pad.right;
+const plotH = H - pad.top - pad.bottom;
+
+function toX(v) { return pad.left + v * plotW; }
+function toY(v) { return pad.top + (1 - v) * plotH; }
+
+// Background
+ctx.fillStyle = '#fafafa';
+ctx.fillRect(0, 0, W, H);
+
+// Grid lines
+ctx.strokeStyle = '#eee';
+ctx.lineWidth = 1;
+[0.25, 0.5, 0.75, 1.0].forEach(v => {
+  ctx.beginPath(); ctx.moveTo(toX(v), toY(0)); ctx.lineTo(toX(v), toY(1)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(toX(0), toY(v)); ctx.lineTo(toX(1), toY(v)); ctx.stroke();
+});
+
+// Axes
+ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
+ctx.beginPath(); ctx.moveTo(toX(0), toY(0)); ctx.lineTo(toX(1), toY(0)); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(toX(0), toY(0)); ctx.lineTo(toX(0), toY(1)); ctx.stroke();
+
+// Random baseline (diagonal)
+ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 2; ctx.setLineDash([6,4]);
+ctx.beginPath(); ctx.moveTo(toX(0), toY(0)); ctx.lineTo(toX(1), toY(1)); ctx.stroke();
+ctx.setLineDash([]);
+
+// Good model curve
+const goodPts = [[0,0],[0.05,0.4],[0.1,0.6],[0.2,0.78],[0.35,0.88],[0.5,0.93],[0.7,0.97],[1,1]];
+ctx.strokeStyle = '#3498db'; ctx.lineWidth = 3;
+ctx.beginPath(); ctx.moveTo(toX(goodPts[0][0]), toY(goodPts[0][1]));
+goodPts.forEach(p => ctx.lineTo(toX(p[0]), toY(p[1]))); ctx.stroke();
+
+// Perfect model
+ctx.strokeStyle = '#2ecc71'; ctx.lineWidth = 3;
+ctx.beginPath();
+ctx.moveTo(toX(0), toY(0));
+ctx.lineTo(toX(0), toY(1));
+ctx.lineTo(toX(1), toY(1));
+ctx.stroke();
+
+// Axis labels
+ctx.fillStyle = '#333'; ctx.font = '13px Arial'; ctx.textAlign = 'center';
+ctx.fillText('False Positive Rate (FPR)', toX(0.5), H - 8);
+ctx.save(); ctx.translate(14, toY(0.5)); ctx.rotate(-Math.PI/2);
+ctx.fillText('True Positive Rate (Recall)', 0, 0); ctx.restore();
+
+// Tick labels
+ctx.font = '11px Arial'; ctx.fillStyle = '#888';
+[0, 0.25, 0.5, 0.75, 1.0].forEach(v => {
+  ctx.textAlign = 'center'; ctx.fillText(v.toFixed(2), toX(v), toY(0) + 16);
+  ctx.textAlign = 'right'; ctx.fillText(v.toFixed(2), toX(0) - 6, toY(v) + 4);
+});
+
+// Legend
+const legends = [
+  { color: '#2ecc71', label: 'Perfect model (AUC = 1.0)' },
+  { color: '#3498db', label: 'Good model (AUC ≈ 0.85)' },
+  { color: '#e74c3c', label: 'Random (AUC = 0.5)' },
+];
+legends.forEach((l, i) => {
+  const lx = toX(0.42), ly = toY(0.15) + i * 22;
+  ctx.fillStyle = l.color;
+  ctx.fillRect(lx, ly - 8, 18, 12);
+  ctx.fillStyle = '#333'; ctx.font = '12px Arial'; ctx.textAlign = 'left';
+  ctx.fillText(l.label, lx + 24, ly + 2);
+});
+</script>
+
+</body>
+</html>
