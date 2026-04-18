@@ -39,12 +39,37 @@
     transition: all 0.2s;
     -webkit-tap-highlight-color: transparent;
   }
+  nav a.l0 { background: #2a1f3d; color: #c084fc; }
   nav a.l1 { background: #2d3561; color: #818cf8; }
   nav a.l2 { background: #1e3a2f; color: #34d399; }
   nav a.l3 { background: #3b2020; color: #f87171; }
   nav a:hover { opacity: 0.8; }
 
   .container { max-width: 1200px; margin: 0 auto; padding: 20px 12px; }
+
+  .def-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .def-card {
+    background: #16102b;
+    border: 1px solid #3b2f6b;
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .def-card h3 {
+    font-size: 11px; font-weight: 700; color: #c084fc;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+  }
+  .def-term { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .def-body { font-size: 12px; color: #a0aec0; line-height: 1.5; margin-bottom: 8px; padding-left: 8px; border-left: 2px solid #4c1d95; }
+  .def-formula {
+    background: #0d0a1a; border: 1px solid #3b2f6b; border-radius: 6px;
+    padding: 8px 10px; font-family: 'Courier New', monospace; font-size: 12px;
+    color: #c084fc; margin: 6px 0; line-height: 1.6;
+  }
+  .badge-l0 { background: #2a1f3d; color: #c084fc; }
+
+  @media (max-width: 600px) {
+    .def-grid { grid-template-columns: 1fr; }
+  }
 
   .section {
     margin-bottom: 48px;
@@ -221,6 +246,7 @@
   <h1>MLE Interview Cheatsheet</h1>
   <p>Expedia Senior ML/GenAI Engineer — LOOP 1, 2, 3 Quick Reference</p>
   <nav>
+    <a href="#foundations" class="l0">Foundations</a>
     <a href="#loop2-ml" class="l2">LOOP 2 · ML Fundamentals</a>
     <a href="#loop2-spark" class="l2">LOOP 2 · Spark</a>
     <a href="#loop1" class="l1">LOOP 1 · AI/ML System Design</a>
@@ -229,6 +255,122 @@
 </header>
 
 <div class="container">
+
+<!-- ═══════════════════════════════════════════════════
+     FOUNDATIONS
+═══════════════════════════════════════════════════ -->
+<div class="section" id="foundations">
+  <div class="section-header">
+    <span class="section-badge badge-l0">FOUNDATIONS</span>
+    <span class="section-title">Core ML Concepts — What They Actually Mean</span>
+  </div>
+
+  <div class="def-grid">
+
+    <div class="def-card">
+      <h3>What is a Model?</h3>
+      <div class="def-term">A function that maps inputs to predictions</div>
+      <div class="def-body">You feed it features (e.g. age, city, spend) and it outputs a prediction (e.g. "will churn: 0.83"). Training = adjusting internal numbers (weights) until predictions are close to real answers.</div>
+      <div class="def-formula">f(X) → ŷ<br>X = features &nbsp;|&nbsp; ŷ = predicted output<br>y = actual label (ground truth)</div>
+    </div>
+
+    <div class="def-card">
+      <h3>What is Bias?</h3>
+      <div class="def-term">How wrong your model is on average — systematic error</div>
+      <div class="def-body">Bias measures how far off your predictions are from the truth, averaged across many predictions. A model predicting "hotel price = $150" when average is $200 has high bias — it's consistently off in the same direction.</div>
+      <div class="def-formula">Bias = E[ŷ] − y<br><br>E[ŷ] = average prediction across datasets<br>y = true value<br><br>High bias → predictions consistently wrong<br>Low bias → predictions right on average</div>
+      <div class="def-body" style="margin-top:6px">In practice: compare <strong>training error</strong> to baseline. High train error = high bias.</div>
+    </div>
+
+    <div class="def-card">
+      <h3>What is Variance?</h3>
+      <div class="def-term">How much predictions change when training data changes</div>
+      <div class="def-body">Train the same model on two slightly different datasets. If predictions change a lot — high variance. The model memorised the training data instead of learning general patterns.</div>
+      <div class="def-formula">Variance = E[(ŷ − E[ŷ])²]<br><br>= spread of predictions around their own mean<br><br>High variance → train error low, test error high<br>Low variance → predictions stable across datasets</div>
+      <div class="def-body" style="margin-top:6px">In practice: big gap between <strong>train error and test error</strong> = high variance.</div>
+    </div>
+
+    <div class="def-card">
+      <h3>What is a Loss Function?</h3>
+      <div class="def-term">A score measuring how wrong the model is right now</div>
+      <div class="def-body">Training = repeatedly asking "how wrong am I?" and adjusting. The loss function is the "how wrong" calculator. Lower is better. The model adjusts weights to minimise it.</div>
+      <div class="def-formula">MSE (regression):<br>Loss = (1/n) Σ (y − ŷ)²<br><br>Cross-entropy (classification):<br>Loss = −Σ y·log(ŷ)<br><br>MAE: Loss = (1/n) Σ |y − ŷ|</div>
+      <div class="def-body" style="margin-top:6px">XGBoost uses log loss by default for classification.</div>
+    </div>
+
+    <div class="def-card">
+      <h3>What is Gradient Descent?</h3>
+      <div class="def-term">The algorithm that actually trains a model</div>
+      <div class="def-body">Imagine the loss as a hilly landscape. Gradient descent finds the downhill direction and takes a small step that way. Repeat millions of times → reach the lowest point (minimum loss).</div>
+      <div class="def-formula">w = w − α · ∂Loss/∂w<br><br>w = weight (what we're adjusting)<br>α = learning rate (step size)<br>∂Loss/∂w = gradient (which direction is downhill)</div>
+      <div class="def-body" style="margin-top:6px">Too high α → overshoots. Too low → too slow. Tree-based models (XGBoost) use gradient descent internally too.</div>
+    </div>
+
+    <div class="def-card">
+      <h3>Parameters vs Hyperparameters</h3>
+      <div class="def-term">Learned automatically vs set by you before training</div>
+      <div class="def-body"><strong>Parameters</strong> — the model learns these from data. You never set them manually.</div>
+      <div class="def-formula">Parameters: weights, coefficients, tree split values<br>→ learned during training via gradient descent</div>
+      <div class="def-body"><strong>Hyperparameters</strong> — you set these before training. They control how the model learns.</div>
+      <div class="def-formula">Hyperparameters: learning rate, max_depth,<br>n_estimators, regularization strength (C, lambda)<br>→ tuned via cross-validation (GridSearch, Optuna)</div>
+    </div>
+
+    <div class="def-card">
+      <h3>Confusion Matrix — TP / FP / TN / FN</h3>
+      <div class="def-term">The foundation of all classification metrics</div>
+      <div class="def-body">Every classification prediction falls into one of 4 buckets:</div>
+      <div class="def-formula">Predicted: YES  |  Predicted: NO<br>─────────────────────────────<br>Actual YES │  TP (hit)  │  FN (miss)<br>Actual NO  │  FP (false │  TN (correct<br>           │   alarm)   │   reject)</div>
+      <div class="def-body" style="margin-top:6px">
+        <strong>TP</strong> = model said yes, was right<br>
+        <strong>FP</strong> = model said yes, was wrong (false alarm)<br>
+        <strong>FN</strong> = model said no, was wrong (missed it)<br>
+        <strong>TN</strong> = model said no, was right
+      </div>
+      <div class="def-formula">Precision = TP / (TP + FP)<br>Recall    = TP / (TP + FN)<br>Accuracy  = (TP + TN) / total</div>
+    </div>
+
+    <div class="def-card">
+      <h3>What is Regularization?</h3>
+      <div class="def-term">A penalty added to the loss to prevent overfitting</div>
+      <div class="def-body">Without regularization, models learn to memorise training data (huge weights, overfits). Regularization adds a penalty for large weights — forcing the model to stay simpler and generalise better.</div>
+      <div class="def-formula">L1 (Lasso):  Loss + λ·Σ|w|<br>→ drives small weights to exactly 0<br>→ automatic feature selection<br><br>L2 (Ridge):  Loss + λ·Σw²<br>→ shrinks all weights toward 0<br>→ keeps all features, just smaller<br><br>λ = regularization strength (hyperparameter)</div>
+    </div>
+
+    <div class="def-card">
+      <h3>Train / Validation / Test Split</h3>
+      <div class="def-term">Why you need 3 separate data buckets</div>
+      <div class="def-body"><strong>Training set</strong> — model learns from this (fits parameters)</div>
+      <div class="def-body"><strong>Validation set</strong> — you tune hyperparameters here. Never used to fit weights.</div>
+      <div class="def-body"><strong>Test set</strong> — locked away until the very end. One-time final evaluation. Gives true estimate of real-world performance.</div>
+      <div class="def-formula">Typical split: 70% train / 15% val / 15% test<br><br>Why not just train + test?<br>If you tune hyperparams on test set → you've<br>leaked test info → overly optimistic results.</div>
+    </div>
+
+    <div class="def-card">
+      <h3>What is Overfitting vs Underfitting?</h3>
+      <div class="def-term">The two ways a model can fail</div>
+      <div class="def-body"><strong>Underfitting (high bias)</strong> — model is too simple. Can't even learn the training data. Train error is high.</div>
+      <div class="def-body"><strong>Overfitting (high variance)</strong> — model memorised training data. Works perfectly on train, fails on new data. Gap between train and test error is large.</div>
+      <div class="def-formula">Underfit:  train error HIGH,  test error HIGH<br>Good fit:  train error LOW,   test error LOW<br>Overfit:   train error LOW,   test error HIGH<br><br>↑ model complexity → bias↓ variance↑<br>↓ model complexity → bias↑ variance↓</div>
+    </div>
+
+    <div class="def-card">
+      <h3>What is a Feature?</h3>
+      <div class="def-term">An input variable the model uses to make predictions</div>
+      <div class="def-body">Raw data needs to be turned into numbers — that's feature engineering. Features are the columns in your training table.</div>
+      <div class="def-formula">Raw: "user checked in on Friday, spent $320"<br><br>Features: day_of_week=5, spend=320,<br>          is_weekend=0, log_spend=5.77<br><br>Label (y): did_churn=1</div>
+      <div class="def-body" style="margin-top:6px"><strong>Feature importance</strong>: XGBoost can rank which features matter most — useful for explaining the model to stakeholders.</div>
+    </div>
+
+    <div class="def-card">
+      <h3>What is Gradient Boosting / XGBoost?</h3>
+      <div class="def-term">An ensemble of weak trees that correct each other's errors</div>
+      <div class="def-body">Build one small decision tree. It makes mistakes. Build a second tree to predict those mistakes. Add them together. Repeat 100–1000 times. Each tree "boosts" the previous one.</div>
+      <div class="def-formula">Final prediction = tree₁ + tree₂ + ... + treeₙ<br><br>Each treeₙ learns: residuals from previous trees<br>(i.e. where did we go wrong?)<br><br>XGBoost = optimised gradient boosting<br>with L1/L2 regularization built in</div>
+      <div class="def-body" style="margin-top:6px">Why it wins on tabular data: handles mixed types, missing values, non-linear patterns, automatically.</div>
+    </div>
+
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════
      LOOP 2 — ML FUNDAMENTALS
