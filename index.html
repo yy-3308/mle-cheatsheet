@@ -6,237 +6,149 @@
 <title>MLE Interview Cheatsheet</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #141414;
+    --card: #1e1e1e;
+    --border: #2e2e2e;
+    --text: #d4d4d4;
+    --muted: #777;
+    --white: #f0f0f0;
+    --accent: #7eb8f7;
+    --code-bg: #191919;
+    --code-text: #b5cea8;
+  }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0f1117;
-    color: #e2e8f0;
+    background: var(--bg);
+    color: var(--text);
     line-height: 1.6;
-    font-size: 14px;
+    font-size: 16px;
     -webkit-text-size-adjust: 100%;
   }
+
   header {
-    background: linear-gradient(135deg, #1a1f2e, #232942);
-    padding: 16px 16px 12px;
-    border-bottom: 1px solid #2d3748;
+    background: var(--card);
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
     z-index: 100;
   }
-  header h1 { font-size: 17px; font-weight: 700; color: #fff; }
-  header p { color: #718096; font-size: 11px; margin-top: 2px; }
-  nav {
-    display: flex;
-    gap: 6px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-  }
+  header h1 { font-size: 16px; font-weight: 700; color: var(--white); }
+  header p { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  nav { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
   nav a {
     text-decoration: none;
-    padding: 5px 11px;
-    border-radius: 20px;
+    padding: 4px 10px;
+    border-radius: 4px;
     font-size: 11px;
-    font-weight: 600;
-    transition: all 0.2s;
+    font-weight: 500;
+    color: var(--muted);
+    border: 1px solid var(--border);
     -webkit-tap-highlight-color: transparent;
   }
-  nav a.l0 { background: #2a1f3d; color: #c084fc; }
-  nav a.l1 { background: #2d3561; color: #818cf8; }
-  nav a.l2 { background: #1e3a2f; color: #34d399; }
-  nav a.l3 { background: #3b2020; color: #f87171; }
-  nav a:hover { opacity: 0.8; }
+  nav a:hover { color: var(--text); border-color: #444; }
 
-  .container { max-width: 1200px; margin: 0 auto; padding: 20px 12px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px 14px; }
 
-  .def-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-  .def-card {
-    background: #16102b;
-    border: 1px solid #3b2f6b;
-    border-radius: 10px;
-    padding: 14px;
-  }
-  .def-card h3 {
-    font-size: 11px; font-weight: 700; color: #c084fc;
-    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
-  }
-  .def-term { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-  .def-body { font-size: 12px; color: #a0aec0; line-height: 1.5; margin-bottom: 8px; padding-left: 8px; border-left: 2px solid #4c1d95; }
-  .def-formula {
-    background: #0d0a1a; border: 1px solid #3b2f6b; border-radius: 6px;
-    padding: 8px 10px; font-family: 'Courier New', monospace; font-size: 12px;
-    color: #c084fc; margin: 6px 0; line-height: 1.6;
-  }
-  .badge-l0 { background: #2a1f3d; color: #c084fc; }
-
-  @media (max-width: 600px) {
-    .def-grid { grid-template-columns: 1fr; }
-  }
-
-  .section {
-    margin-bottom: 48px;
-  }
+  .section { margin-bottom: 40px; }
   .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #2d3748;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
   }
-  .section-badge {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  .badge-l1 { background: #2d3561; color: #818cf8; }
-  .badge-l2 { background: #1e3a2f; color: #34d399; }
-  .badge-l3 { background: #3b2020; color: #f87171; }
-  .section-title { font-size: 18px; font-weight: 700; color: #fff; }
+  .section-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  .section-title { font-size: 16px; font-weight: 700; color: var(--white); }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
 
+  /* standard card */
   .card {
-    background: #1a1f2e;
-    border: 1px solid #2d3748;
-    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
     padding: 14px;
   }
   .card h3 {
-    font-size: 11px;
-    font-weight: 700;
-    color: #a0aec0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
+    font-size: 10px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px;
   }
   .card ul { list-style: none; }
   .card ul li {
-    padding: 7px 0;
-    border-bottom: 1px solid #2d3748;
-    font-size: 13px;
-    color: #cbd5e0;
-    line-height: 1.5;
+    padding: 6px 0; border-bottom: 1px solid var(--border);
+    font-size: 14px; color: var(--text); line-height: 1.5;
   }
   .card ul li:last-child { border-bottom: none; }
-  .card ul li strong { color: #fff; }
+  .card ul li strong { color: var(--white); }
 
-  .highlight { color: #fbbf24; font-weight: 600; }
-  .green { color: #34d399; }
-  .red { color: #f87171; }
-  .blue { color: #60a5fa; }
-  .purple { color: #a78bfa; }
+  /* definition card */
+  .def-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .def-card h3 {
+    font-size: 10px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;
+  }
+  .def-term { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+  .def-body { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 8px; }
+  .def-formula {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 10px; font-family: 'Courier New', monospace; font-size: 13px;
+    color: var(--code-text); margin: 6px 0; line-height: 1.65; white-space: pre-wrap;
+  }
 
-  .qa-block { margin-bottom: 12px; }
-  .qa-block .q {
-    font-weight: 700;
-    color: #fff;
-    font-size: 13px;
-    margin-bottom: 4px;
-  }
-  .qa-block .a {
-    color: #a0aec0;
-    font-size: 13px;
-    padding-left: 12px;
-    border-left: 2px solid #4a5568;
-  }
+  .qa-block { margin-bottom: 10px; }
+  .qa-block .q { font-weight: 600; color: var(--white); font-size: 14px; margin-bottom: 3px; }
+  .qa-block .a { font-size: 13px; color: var(--text); padding-left: 10px; border-left: 2px solid var(--border); line-height: 1.5; }
 
   code {
-    background: #2d3748;
-    padding: 1px 6px;
-    border-radius: 3px;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 12px;
-    color: #68d391;
+    background: var(--code-bg); padding: 1px 5px; border-radius: 3px;
+    font-family: 'Courier New', monospace; font-size: 12px; color: var(--code-text);
   }
   pre {
-    background: #1a2436;
-    border: 1px solid #2d3748;
-    border-radius: 8px;
-    padding: 12px;
-    overflow-x: auto;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 11px;
-    color: #68d391;
-    line-height: 1.65;
-    margin-top: 8px;
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 12px; overflow-x: auto; font-family: 'Courier New', monospace;
+    font-size: 11.5px; color: var(--code-text); line-height: 1.65; margin-top: 8px;
     -webkit-overflow-scrolling: touch;
-  }
-  .tag {
-    display: inline-block;
-    background: #2d3748;
-    color: #a0aec0;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    margin: 2px;
   }
 
   .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 260px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
   th {
-    background: #2d3748;
-    color: #a0aec0;
-    text-align: left;
-    padding: 7px 10px;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
+    background: #242424; color: var(--muted); text-align: left;
+    padding: 7px 10px; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.5px; white-space: nowrap;
   }
-  td { padding: 7px 10px; border-bottom: 1px solid #2d3748; color: #cbd5e0; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
   tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #1e2535; }
 
-  .divider { margin: 24px 0; border-top: 1px dashed #2d3748; }
-  .subsection-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #718096;
-    margin-bottom: 12px;
-    margin-top: 20px;
+  .subsection-label {
+    font-size: 10px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin: 16px 0 8px;
   }
 
-  .pipeline-row {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    flex-wrap: wrap;
-    margin: 12px 0;
-  }
+  .pipeline-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin: 10px 0; }
   .pipeline-step {
-    background: #1e2535;
-    border: 1px solid #3d4f6b;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #60a5fa;
-    white-space: nowrap;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 5px 10px; border-radius: 4px; font-size: 12px; color: var(--text); white-space: nowrap;
   }
-  .pipeline-arrow {
-    color: #4a5568;
-    padding: 0 4px;
-    font-size: 14px;
-  }
+  .pipeline-arrow { color: var(--muted); font-size: 12px; }
+
+  .red { color: #e06c75; }
 
   @media (max-width: 600px) {
     header { padding: 12px 12px 10px; }
-    header h1 { font-size: 15px; }
     .container { padding: 14px 10px; }
-    .section { margin-bottom: 32px; }
-    .section-title { font-size: 15px; }
-    .grid, .grid-3 { grid-template-columns: 1fr; gap: 10px; }
-    .card { padding: 12px; }
-    pre { font-size: 10.5px; padding: 10px; }
-    .pipeline-row { gap: 4px; }
-    .pipeline-step { font-size: 11px; padding: 5px 9px; }
-    .qa-block .q { font-size: 12px; }
-    .qa-block .a { font-size: 12px; }
-    nav a { font-size: 10px; padding: 4px 9px; }
-    .subsection-title { font-size: 13px; }
+    .section { margin-bottom: 28px; }
+    .grid { grid-template-columns: 1fr; gap: 8px; }
+    pre { font-size: 11px; }
+    nav a { font-size: 10px; padding: 4px 8px; }
   }
 </style>
 </head>
@@ -246,11 +158,11 @@
   <h1>MLE Interview Cheatsheet</h1>
   <p>Expedia Senior ML/GenAI Engineer — LOOP 1, 2, 3 Quick Reference</p>
   <nav>
-    <a href="#foundations" class="l0">Foundations</a>
-    <a href="#loop2-ml" class="l2">LOOP 2 · ML Fundamentals</a>
-    <a href="#loop2-spark" class="l2">LOOP 2 · Spark</a>
-    <a href="#loop1" class="l1">LOOP 1 · AI/ML System Design</a>
-    <a href="#loop3" class="l3">LOOP 3 · System Design</a>
+    <a href="#foundations">Foundations</a>
+    <a href="#loop2-ml">Loop 2 · ML</a>
+    <a href="#loop2-spark">Loop 2 · Spark</a>
+    <a href="#loop1">Loop 1 · System Design</a>
+    <a href="#loop3">Loop 3 · Coding</a>
   </nav>
 </header>
 
@@ -261,8 +173,8 @@
 ═══════════════════════════════════════════════════ -->
 <div class="section" id="foundations">
   <div class="section-header">
-    <span class="section-badge badge-l0">FOUNDATIONS</span>
-    <span class="section-title">Core ML Concepts — What They Actually Mean</span>
+    <div class="section-label">Foundations</div>
+    <div class="section-title">Core ML Concepts — What They Actually Mean</div>
   </div>
 
   <div class="def-grid">
@@ -377,8 +289,8 @@
 ═══════════════════════════════════════════════════ -->
 <div class="section" id="loop2-ml">
   <div class="section-header">
-    <span class="section-badge badge-l2">LOOP 2</span>
-    <span class="section-title">ML Fundamentals (15-min quiz)</span>
+    <div class="section-label">Loop 2</div>
+    <div class="section-title">ML Fundamentals (15-min quiz)</div>
   </div>
 
   <div class="grid">
@@ -504,8 +416,8 @@
 ═══════════════════════════════════════════════════ -->
 <div class="section" id="loop2-spark">
   <div class="section-header">
-    <span class="section-badge badge-l2">LOOP 2</span>
-    <span class="section-title">Spark — Feature Engineering at Scale</span>
+    <div class="section-label">Loop 2</div>
+    <div class="section-title">Spark — Feature Engineering at Scale</div>
   </div>
 
   <div class="grid">
@@ -628,11 +540,11 @@ train, test = df.randomSplit([0.8, 0.2], seed=42)</pre>
 ═══════════════════════════════════════════════════ -->
 <div class="section" id="loop1">
   <div class="section-header">
-    <span class="section-badge badge-l1">LOOP 1</span>
-    <span class="section-title">AI/ML System Design — Past Experience & On-the-Spot</span>
+    <div class="section-label">Loop 1</div>
+    <div class="section-title">AI/ML System Design — Past Experience & On-the-Spot</div>
   </div>
 
-  <div class="subsection-title">The ML System — End-to-End Pipeline</div>
+  <div class="subsection-label">The ML System — End-to-End Pipeline</div>
   <div class="pipeline-row">
     <div class="pipeline-step">Data Ingestion</div>
     <div class="pipeline-arrow">→</div>
@@ -757,8 +669,8 @@ train, test = df.randomSplit([0.8, 0.2], seed=42)</pre>
 ═══════════════════════════════════════════════════ -->
 <div class="section" id="loop3">
   <div class="section-header">
-    <span class="section-badge badge-l3">LOOP 3</span>
-    <span class="section-title">Coding & System Design</span>
+    <div class="section-label">Loop 3</div>
+    <div class="section-title">Coding & System Design</div>
   </div>
 
   <div class="grid">
