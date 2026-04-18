@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLE Interview Cheatsheet</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    line-height: 1.6;
+    font-size: 14px;
+    -webkit-text-size-adjust: 100%;
+  }
+  header {
+    background: linear-gradient(135deg, #1a1f2e, #232942);
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid #2d3748;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1 { font-size: 17px; font-weight: 700; color: #fff; }
+  header p { color: #718096; font-size: 11px; margin-top: 2px; }
+  nav {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  nav a {
+    text-decoration: none;
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  nav a.l1 { background: #2d3561; color: #818cf8; }
+  nav a.l2 { background: #1e3a2f; color: #34d399; }
+  nav a.l3 { background: #3b2020; color: #f87171; }
+  nav a:hover { opacity: 0.8; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 20px 12px; }
+
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #2d3748;
+  }
+  .section-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-l1 { background: #2d3561; color: #818cf8; }
+  .badge-l2 { background: #1e3a2f; color: #34d399; }
+  .badge-l3 { background: #3b2020; color: #f87171; }
+  .section-title { font-size: 18px; font-weight: 700; color: #fff; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+
+  .card {
+    background: #1a1f2e;
+    border: 1px solid #2d3748;
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .card h3 {
+    font-size: 11px;
+    font-weight: 700;
+    color: #a0aec0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+  .card ul { list-style: none; }
+  .card ul li {
+    padding: 7px 0;
+    border-bottom: 1px solid #2d3748;
+    font-size: 13px;
+    color: #cbd5e0;
+    line-height: 1.5;
+  }
+  .card ul li:last-child { border-bottom: none; }
+  .card ul li strong { color: #fff; }
+
+  .highlight { color: #fbbf24; font-weight: 600; }
+  .green { color: #34d399; }
+  .red { color: #f87171; }
+  .blue { color: #60a5fa; }
+  .purple { color: #a78bfa; }
+
+  .qa-block { margin-bottom: 12px; }
+  .qa-block .q {
+    font-weight: 700;
+    color: #fff;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .qa-block .a {
+    color: #a0aec0;
+    font-size: 13px;
+    padding-left: 12px;
+    border-left: 2px solid #4a5568;
+  }
+
+  code {
+    background: #2d3748;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: #68d391;
+  }
+  pre {
+    background: #1a2436;
+    border: 1px solid #2d3748;
+    border-radius: 8px;
+    padding: 12px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    color: #68d391;
+    line-height: 1.65;
+    margin-top: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tag {
+    display: inline-block;
+    background: #2d3748;
+    color: #a0aec0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin: 2px;
+  }
+
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 260px; }
+  th {
+    background: #2d3748;
+    color: #a0aec0;
+    text-align: left;
+    padding: 7px 10px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  td { padding: 7px 10px; border-bottom: 1px solid #2d3748; color: #cbd5e0; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #1e2535; }
+
+  .divider { margin: 24px 0; border-top: 1px dashed #2d3748; }
+  .subsection-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #718096;
+    margin-bottom: 12px;
+    margin-top: 20px;
+  }
+
+  .pipeline-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .pipeline-step {
+    background: #1e2535;
+    border: 1px solid #3d4f6b;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #60a5fa;
+    white-space: nowrap;
+  }
+  .pipeline-arrow {
+    color: #4a5568;
+    padding: 0 4px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 12px 12px 10px; }
+    header h1 { font-size: 15px; }
+    .container { padding: 14px 10px; }
+    .section { margin-bottom: 32px; }
+    .section-title { font-size: 15px; }
+    .grid, .grid-3 { grid-template-columns: 1fr; gap: 10px; }
+    .card { padding: 12px; }
+    pre { font-size: 10.5px; padding: 10px; }
+    .pipeline-row { gap: 4px; }
+    .pipeline-step { font-size: 11px; padding: 5px 9px; }
+    .qa-block .q { font-size: 12px; }
+    .qa-block .a { font-size: 12px; }
+    nav a { font-size: 10px; padding: 4px 9px; }
+    .subsection-title { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>MLE Interview Cheatsheet</h1>
+  <p>Expedia Senior ML/GenAI Engineer — LOOP 1, 2, 3 Quick Reference</p>
+  <nav>
+    <a href="#loop2-ml" class="l2">LOOP 2 · ML Fundamentals</a>
+    <a href="#loop2-spark" class="l2">LOOP 2 · Spark</a>
+    <a href="#loop1" class="l1">LOOP 1 · AI/ML System Design</a>
+    <a href="#loop3" class="l3">LOOP 3 · System Design</a>
+  </nav>
+</header>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════════
+     LOOP 2 — ML FUNDAMENTALS
+═══════════════════════════════════════════════════ -->
+<div class="section" id="loop2-ml">
+  <div class="section-header">
+    <span class="section-badge badge-l2">LOOP 2</span>
+    <span class="section-title">ML Fundamentals (15-min quiz)</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Bias vs Variance</h3>
+      <ul>
+        <li><strong>High bias</strong> = model too simple → underfits → <span class="red">high train & test error</span></li>
+        <li><strong>High variance</strong> = model too complex → overfits → <span class="red">low train, high test error</span></li>
+        <li><strong>Sweet spot</strong>: tune complexity until train ≈ test error (both low)</li>
+        <li><strong>Fix bias</strong>: more features, more complex model, less regularization</li>
+        <li><strong>Fix variance</strong>: more data, regularization, simpler model, ensemble</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Overfitting — Fixes</h3>
+      <ul>
+        <li><strong>More training data</strong> — gold standard when available</li>
+        <li><strong>L1 (Lasso)</strong> — drives weights to zero, feature selection</li>
+        <li><strong>L2 (Ridge)</strong> — shrinks weights, keeps all features</li>
+        <li><strong>Dropout</strong> — randomly zeros neurons during training (NNs)</li>
+        <li><strong>Early stopping</strong> — stop when validation loss plateaus</li>
+        <li><strong>Simpler model</strong> — fewer layers/trees/features</li>
+        <li><strong>Cross-validation</strong> — detect overfit before deployment</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Imbalanced Data</h3>
+      <ul>
+        <li><span class="red">Accuracy is useless</span> — 99% accurate by always predicting majority</li>
+        <li><strong>SMOTE</strong> — synthetically oversample minority class</li>
+        <li><strong>class_weight='balanced'</strong> — penalize majority errors more</li>
+        <li><strong>Undersample</strong> — randomly drop majority rows</li>
+        <li><strong>Threshold tuning</strong> — lower predict_proba threshold for minority</li>
+        <li><strong>Use</strong>: Recall, ROC-AUC, F1, PR-AUC — not accuracy</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Evaluation Metrics</h3>
+      <ul>
+        <li><strong>Accuracy</strong> — (TP+TN)/total. Misleading if imbalanced.</li>
+        <li><strong>Precision</strong> — TP/(TP+FP). "Of positives I called, how many right?"</li>
+        <li><strong>Recall</strong> — TP/(TP+FN). "Of actual positives, how many caught?"</li>
+        <li><strong>F1</strong> — harmonic mean of precision & recall. Balances both.</li>
+        <li><strong>ROC-AUC</strong> — rank quality across all thresholds. Needs <code>predict_proba()</code></li>
+        <li><strong>MAE</strong> — mean absolute error. Robust to outliers.</li>
+        <li><strong>RMSE</strong> — penalizes large errors more. Sensitive to outliers.</li>
+        <li><strong>R²</strong> — % variance explained. 1.0 = perfect, 0 = baseline mean.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>When to Use Which Metric</h3>
+<div class="table-wrap">      <table>
+        <tr><th>Scenario</th><th>Use</th></tr>
+        <tr><td>Fraud / cancer detection</td><td><span class="green">Recall + ROC-AUC</span></td></tr>
+        <tr><td>Spam filter</td><td><span class="green">Precision</span></td></tr>
+        <tr><td>Imbalanced classes</td><td><span class="green">F1, PR-AUC</span></td></tr>
+        <tr><td>Ranking / recommendations</td><td><span class="green">NDCG, MAP</span></td></tr>
+        <tr><td>Price prediction</td><td><span class="green">RMSE / MAE</span></td></tr>
+        <tr><td>Any regression</td><td><span class="green">RMSE + R²</span></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Model Selection</h3>
+      <ul>
+        <li><strong>Tabular data</strong> → XGBoost / LightGBM (almost always best)</li>
+        <li><strong>Linear relationships</strong> → Logistic / Linear Regression (fast, interpretable)</li>
+        <li><strong>Text / images / sequences</strong> → Neural networks / Transformers</li>
+        <li><strong>Small data, need interpretability</strong> → Decision Tree, Logistic Regression</li>
+        <li><strong>Ensemble</strong> → Random Forest (bagging), XGBoost (boosting)</li>
+        <li><strong>Clustering</strong> → K-Means (known k), DBSCAN (unknown k / noise)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Model Selection — Key Q&A</h3>
+      <div class="qa-block">
+        <div class="q">Why XGBoost over Random Forest?</div>
+        <div class="a">Boosting = sequential, each tree corrects prior errors. Usually better accuracy. RF = parallel bagging, better when you want speed/simplicity.</div>
+      </div>
+      <div class="qa-block">
+        <div class="q">When NOT to use a neural network?</div>
+        <div class="a">Small tabular data — overfits easily. XGBoost wins. NNs shine on unstructured data (text, images) with lots of data.</div>
+      </div>
+      <div class="qa-block">
+        <div class="q">How to pick between L1 and L2?</div>
+        <div class="a">L1 if you suspect many features are irrelevant (want sparse model). L2 if all features matter and you just want smaller weights.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Cross-Validation</h3>
+      <ul>
+        <li><strong>K-Fold</strong> — split into k folds, train on k-1, test on 1, rotate. Average score.</li>
+        <li><strong>Stratified K-Fold</strong> — preserve class ratio in each fold. Use for imbalanced.</li>
+        <li><strong>Time-series</strong> → TimeSeriesSplit — never use future data to predict past!</li>
+        <li><strong>Rule</strong>: tune hyperparams on validation, report final score on held-out test set</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Feature Engineering Recap</h3>
+      <ul>
+        <li><strong>Encoding</strong>: binary → <code>map()</code>, 3+ categories → <code>pd.get_dummies()</code></li>
+        <li><strong>Scaling</strong>: StandardScaler (z-score), MinMaxScaler (0–1)</li>
+        <li><strong>Nulls</strong>: fill mean/median/mode, or flag with binary column</li>
+        <li><strong>Binning</strong>: <code>pd.cut()</code> for equal-width, <code>pd.qcut()</code> for equal-frequency</li>
+        <li><strong>Data leakage</strong>: never use future info or target-correlated features created after the label</li>
+        <li><strong>High cardinality</strong>: target encoding, frequency encoding, or embedding</li>
+      </ul>
+    </div>
+
+  </div><!-- /grid -->
+</div><!-- /section -->
+
+<!-- ═══════════════════════════════════════════════════
+     LOOP 2 — SPARK
+═══════════════════════════════════════════════════ -->
+<div class="section" id="loop2-spark">
+  <div class="section-header">
+    <span class="section-badge badge-l2">LOOP 2</span>
+    <span class="section-title">Spark — Feature Engineering at Scale</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Core Spark ML Transformers</h3>
+<div class="table-wrap">      <table>
+        <tr><th>Transformer</th><th>What it does</th></tr>
+        <tr><td><code>VectorAssembler</code></td><td>Combine columns → feature vector</td></tr>
+        <tr><td><code>StringIndexer</code></td><td>String → numeric index (encode categoricals)</td></tr>
+        <tr><td><code>OneHotEncoder</code></td><td>Index → one-hot vector</td></tr>
+        <tr><td><code>StandardScaler</code></td><td>Z-score normalization</td></tr>
+        <tr><td><code>MinMaxScaler</code></td><td>Scale to [0, 1]</td></tr>
+        <tr><td><code>Imputer</code></td><td>Fill nulls with mean/median</td></tr>
+        <tr><td><code>Bucketizer</code></td><td>Numeric → bins (like pd.cut)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>ML Pipeline Pattern</h3>
+      <pre>from pyspark.ml import Pipeline
+from pyspark.ml.feature import (
+    StringIndexer, OneHotEncoder,
+    VectorAssembler, StandardScaler
+)
+from pyspark.ml.classification import GBTClassifier
+
+indexer = StringIndexer(inputCol="city", outputCol="city_idx")
+encoder = OneHotEncoder(inputCol="city_idx", outputCol="city_vec")
+assembler = VectorAssembler(
+    inputCols=["age", "city_vec", "spend"],
+    outputCol="features"
+)
+scaler = StandardScaler(inputCol="features", outputCol="scaled")
+model = GBTClassifier(featuresCol="scaled", labelCol="label")
+
+pipeline = Pipeline(stages=[indexer, encoder, assembler, scaler, model])
+fitted = pipeline.fit(train_df)
+preds = fitted.transform(test_df)</pre>
+    </div>
+
+    <div class="card">
+      <h3>Window Functions for Features</h3>
+      <pre>from pyspark.sql import Window
+import pyspark.sql.functions as F
+
+w = Window.partitionBy("user_id").orderBy("event_ts")
+
+df = df.withColumn(
+    "prev_amount",
+    F.lag("amount", 1).over(w)          # previous row
+).withColumn(
+    "rolling_7d_sum",
+    F.sum("amount").over(
+        w.rowsBetween(-6, 0)            # 7-row rolling
+    )
+).withColumn(
+    "session_rank",
+    F.rank().over(w)
+)</pre>
+    </div>
+
+    <div class="card">
+      <h3>Handling Skew</h3>
+      <ul>
+        <li><strong>Identify</strong>: <code>df.groupBy("key").count().orderBy("count", asc=False)</code></li>
+        <li><strong>Repartition</strong>: <code>df.repartition(200, "user_id")</code> — distributes evenly</li>
+        <li><strong>Broadcast join</strong>: for small lookup tables — avoids shuffle entirely</li>
+        <li><strong>Salting</strong>: add random prefix to hot key, join on salted key, then aggregate</li>
+        <li><strong>AQE</strong>: Spark 3+ adaptive query execution handles skew automatically</li>
+      </ul>
+      <pre># Broadcast join (small table)
+from pyspark.sql.functions import broadcast
+result = big_df.join(broadcast(small_df), "id")</pre>
+    </div>
+
+    <div class="card">
+      <h3>Common Spark Operations</h3>
+      <pre># Filtering
+df.filter(F.col("amount") > 100)
+df.filter(F.col("country").isin(["US", "UK"]))
+
+# GroupBy + Agg
+df.groupBy("user_id").agg(
+    F.sum("amount").alias("total"),
+    F.avg("amount").alias("avg_spend"),
+    F.count("*").alias("n_txns")
+)
+
+# New column
+df.withColumn("log_spend", F.log("amount"))
+
+# Null handling
+df.fillna({"amount": 0, "city": "unknown"})
+df.dropna(subset=["label"])
+
+# Train/test split
+train, test = df.randomSplit([0.8, 0.2], seed=42)</pre>
+    </div>
+
+    <div class="card">
+      <h3>Spark vs Pandas — Key Differences</h3>
+<div class="table-wrap">      <table>
+        <tr><th>Pandas</th><th>Spark</th></tr>
+        <tr><td><code>df['col']</code></td><td><code>F.col("col")</code></td></tr>
+        <tr><td><code>df.groupby().agg()</code></td><td><code>df.groupBy().agg()</code></td></tr>
+        <tr><td><code>df['new'] = x</code></td><td><code>df.withColumn("new", x)</code></td></tr>
+        <tr><td><code>df.merge()</code></td><td><code>df.join(other, "key", "left")</code></td></tr>
+        <tr><td><code>df.sort_values()</code></td><td><code>df.orderBy()</code></td></tr>
+        <tr><td><code>df.dropna()</code></td><td><code>df.dropna(subset=[...])</code></td></tr>
+        <tr><td>Eager (runs now)</td><td>Lazy (runs at .show()/.collect())</td></tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     LOOP 1 — AI/ML SYSTEM DESIGN
+═══════════════════════════════════════════════════ -->
+<div class="section" id="loop1">
+  <div class="section-header">
+    <span class="section-badge badge-l1">LOOP 1</span>
+    <span class="section-title">AI/ML System Design — Past Experience & On-the-Spot</span>
+  </div>
+
+  <div class="subsection-title">The ML System — End-to-End Pipeline</div>
+  <div class="pipeline-row">
+    <div class="pipeline-step">Data Ingestion</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">Feature Store</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">Training</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">Model Registry</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">Serving</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">Monitoring</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">Retraining</div>
+  </div>
+
+  <div class="grid" style="margin-top: 20px;">
+
+    <div class="card">
+      <h3>Feature Store</h3>
+      <ul>
+        <li><strong>What</strong>: centralized store for computed features, shared across models</li>
+        <li><strong>Online store</strong>: low-latency lookup at serving time (Redis, DynamoDB)</li>
+        <li><strong>Offline store</strong>: historical features for training (S3, BigQuery)</li>
+        <li><strong>Point-in-time correctness</strong>: prevents leakage — features at label time only</li>
+        <li><strong>Tool</strong>: Feast (open source), Tecton, Vertex AI Feature Store</li>
+        <li><strong>DE angle</strong>: it's a data pipeline + serving layer — your territory</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Model Registry & MLOps</h3>
+      <ul>
+        <li><strong>Model Registry</strong>: version control for models (MLflow, SageMaker Registry)</li>
+        <li>Tracks: metrics, params, artifacts, lineage, stage (Staging → Production)</li>
+        <li><strong>CI/CD for ML</strong>: retrain on schedule or data drift trigger → auto-eval → promote</li>
+        <li><strong>A/B testing</strong>: route % traffic to challenger model, compare metrics</li>
+        <li><strong>Shadow mode</strong>: run new model in parallel, log predictions, don't serve yet</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Model Serving Patterns</h3>
+<div class="table-wrap">      <table>
+        <tr><th>Pattern</th><th>When to use</th></tr>
+        <tr><td><span class="green">REST API</span></td><td>Real-time, low-latency (&lt;100ms)</td></tr>
+        <tr><td><span class="green">Batch inference</span></td><td>Pre-compute for millions of users nightly</td></tr>
+        <tr><td><span class="green">Streaming</span></td><td>Near-real-time (Kafka + Flink/Spark Streaming)</td></tr>
+        <tr><td><span class="green">Edge</span></td><td>On-device, no network dependency</td></tr>
+      </table>
+</div>
+      <ul style="margin-top:10px">
+        <li><strong>Latency vs throughput</strong>: REST = low latency, batch = high throughput</li>
+        <li><strong>Caching</strong>: cache predictions for identical feature vectors</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Monitoring & Data Drift</h3>
+      <ul>
+        <li><strong>Data drift</strong>: input distribution shifts (user behavior changes, new markets)</li>
+        <li><strong>Concept drift</strong>: relationship between features and label changes</li>
+        <li><strong>Detect</strong>: PSI (Population Stability Index), KS test, Jensen-Shannon divergence</li>
+        <li><strong>Model decay</strong>: metrics drop over time → trigger retraining</li>
+        <li><strong>Monitoring stack</strong>: Evidently, WhyLogs, Grafana + custom metrics</li>
+        <li><strong>Business metrics</strong>: always monitor click-through, conversion — not just AUC</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Retraining Strategy</h3>
+      <ul>
+        <li><strong>Scheduled</strong>: retrain weekly/monthly (simple, predictable)</li>
+        <li><strong>Triggered</strong>: retrain when drift detected or metric drops threshold</li>
+        <li><strong>Continuous</strong>: stream new data, update model incrementally (online learning)</li>
+        <li><strong>Full retrain vs fine-tune</strong>: full = safer, fine-tune = faster for stable distributions</li>
+        <li><strong>Training data strategy</strong>: sliding window (recent data only) vs full history</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>"What would you do differently?" Framing</h3>
+      <ul>
+        <li>1. <strong>Data quality first</strong> — validation, null checks, schema enforcement at ingest</li>
+        <li>2. <strong>Feature versioning</strong> — unversioned features = silent regressions</li>
+        <li>3. <strong>Monitor earlier</strong> — don't wait for user complaints to detect drift</li>
+        <li>4. <strong>Reproducibility</strong> — log data snapshot + code version + seed used for every run</li>
+        <li>5. <strong>Business alignment</strong> — always tie model metric to business KPI from day 1</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>On-the-Spot Design — Framework</h3>
+      <ul>
+        <li><strong>1. Clarify</strong>: real-time or batch? scale? latency requirement? labels available?</li>
+        <li><strong>2. Data</strong>: what signals exist, how collected, how fresh?</li>
+        <li><strong>3. Features</strong>: what to engineer, how to avoid leakage</li>
+        <li><strong>4. Model</strong>: pick + justify. XGBoost first unless unstructured data.</li>
+        <li><strong>5. Training</strong>: how often, on what data window?</li>
+        <li><strong>6. Serving</strong>: API or batch? latency target?</li>
+        <li><strong>7. Monitoring</strong>: what drifts, what do you alert on?</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>GenAI / LLM System Design</h3>
+      <ul>
+        <li><strong>RAG</strong>: embed docs → vector DB → retrieve top-k → LLM answer</li>
+        <li><strong>Vector DB</strong>: Pinecone, Weaviate, pgvector — for semantic search</li>
+        <li><strong>Prompt engineering</strong>: system prompt, few-shot examples, chain-of-thought</li>
+        <li><strong>Fine-tuning</strong>: when base model lacks domain knowledge; expensive; needs labeled data</li>
+        <li><strong>Evaluation</strong>: RAGAS for RAG, LLM-as-judge, human eval for open-ended</li>
+        <li><strong>Guardrails</strong>: input/output validation, hallucination detection, PII redaction</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     LOOP 3 — SYSTEM DESIGN
+═══════════════════════════════════════════════════ -->
+<div class="section" id="loop3">
+  <div class="section-header">
+    <span class="section-badge badge-l3">LOOP 3</span>
+    <span class="section-title">Coding & System Design</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Lambda vs Kappa Architecture</h3>
+<div class="table-wrap">      <table>
+        <tr><th></th><th>Lambda</th><th>Kappa</th></tr>
+        <tr><td><strong>Layers</strong></td><td>Batch + Speed + Serving</td><td>Streaming only</td></tr>
+        <tr><td><strong>Complexity</strong></td><td>High (two codebases)</td><td>Lower (one)</td></tr>
+        <tr><td><strong>Accuracy</strong></td><td>Batch is accurate, speed is approx</td><td>Streaming = source of truth</td></tr>
+        <tr><td><strong>Use when</strong></td><td>Need accurate historical + real-time</td><td>Streaming handles all needs</td></tr>
+        <tr><td><strong>Tools</strong></td><td>Spark (batch) + Kafka (speed)</td><td>Kafka + Flink / Spark Streaming</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Data Pipeline Design — Building Blocks</h3>
+      <ul>
+        <li><strong>Ingest</strong>: Kafka (streaming), S3/GCS (batch), CDC (Debezium)</li>
+        <li><strong>Process</strong>: Spark (batch), Flink/Spark Streaming (real-time)</li>
+        <li><strong>Store</strong>: Data lake (S3 + Delta/Iceberg), DW (Snowflake/BigQuery), OLTP (Postgres)</li>
+        <li><strong>Orchestrate</strong>: Airflow (batch), Kafka (streaming triggers)</li>
+        <li><strong>Quality</strong>: Great Expectations, dbt tests, schema registry</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Real-Time vs Batch Feature Pipelines</h3>
+<div class="table-wrap">      <table>
+        <tr><th></th><th>Batch</th><th>Real-Time</th></tr>
+        <tr><td><strong>Freshness</strong></td><td>Hours–daily</td><td>Seconds–minutes</td></tr>
+        <tr><td><strong>Scale</strong></td><td>Cheap for large history</td><td>Expensive at high volume</td></tr>
+        <tr><td><strong>Complexity</strong></td><td>Low</td><td>High (state, exactly-once)</td></tr>
+        <tr><td><strong>Use for</strong></td><td>Stable user features</td><td>Session, recent activity</td></tr>
+      </table>
+</div>
+      <div class="qa-block" style="margin-top:10px">
+        <div class="q">When do you need real-time features?</div>
+        <div class="a">Fraud detection, personalization at session start, recommendation on current session behavior.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Scalability Principles</h3>
+      <ul>
+        <li><strong>Horizontal scaling</strong>: add more nodes (Spark executors, API replicas)</li>
+        <li><strong>Partitioning</strong>: partition by time or user_id to parallelize processing</li>
+        <li><strong>Caching</strong>: Redis for hot lookup features, CDN for model artifacts</li>
+        <li><strong>Async processing</strong>: return job_id immediately, process in background</li>
+        <li><strong>Rate limiting</strong>: protect serving endpoints from traffic spikes</li>
+        <li><strong>Idempotency</strong>: safe to retry failed jobs without double-counting</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>System Design Interview — Framework</h3>
+      <ul>
+        <li><strong>1. Requirements</strong>: scale (QPS, data volume), latency, consistency needs</li>
+        <li><strong>2. High-level design</strong>: draw the boxes (ingest → process → store → serve)</li>
+        <li><strong>3. Data model</strong>: schema, partitioning strategy, indexes</li>
+        <li><strong>4. Deep dive</strong>: bottlenecks, failure modes, trade-offs</li>
+        <li><strong>5. Monitoring</strong>: what metrics to watch, alerts</li>
+        <li><strong>Tip</strong>: Always estimate scale first before choosing tech. 1K QPS ≠ 1M QPS.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Common System Design Scenarios</h3>
+      <div class="qa-block">
+        <div class="q">Design a recommendation system for hotels</div>
+        <div class="a">Offline: Spark → feature store (user history, item features) → train CF/XGBoost → model registry. Online: request → feature lookup → model API → ranked list. Monitor CTR/conversion.</div>
+      </div>
+      <div class="qa-block">
+        <div class="q">Design a fraud detection system</div>
+        <div class="a">Real-time: Kafka → Flink (compute session features) → model API → block/allow. Batch: daily retrain on labeled data. High recall target. Investigate FPs with ops team.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Coding — Key Patterns to Know</h3>
+      <pre># Sliding window (common in system design coding)
+def max_sum_subarray(nums, k):
+    window_sum = sum(nums[:k])
+    max_sum = window_sum
+    for i in range(k, len(nums)):
+        window_sum += nums[i] - nums[i-k]
+        max_sum = max(max_sum, window_sum)
+    return max_sum
+
+# Two pointers
+def find_pair_sum(arr, target):
+    arr.sort()
+    l, r = 0, len(arr)-1
+    while l < r:
+        s = arr[l] + arr[r]
+        if s == target: return True
+        elif s < target: l += 1
+        else: r -= 1
+    return False</pre>
+    </div>
+
+    <div class="card">
+      <h3>DE → MLE: Translate Your Strengths</h3>
+      <ul>
+        <li><strong>Pipelines</strong> → Feature pipelines, training pipelines, model CI/CD</li>
+        <li><strong>Data quality</strong> → Training data quality, label quality, leakage prevention</li>
+        <li><strong>Schema management</strong> → Feature versioning, model input schema validation</li>
+        <li><strong>Partitioning/performance</strong> → Training data sampling, Spark ML at scale</li>
+        <li><strong>Monitoring</strong> → Data drift detection, model performance tracking</li>
+        <li><strong>Frame it</strong>: "As a DE, I owned the data that feeds ML — I understand both sides"</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<div style="text-align: center; color: #4a5568; font-size: 12px; padding: 32px 0;">
+  Last updated: April 2026 · Expedia MLE Interview Prep
+</div>
+
+</div><!-- /container -->
+</body>
+</html>
