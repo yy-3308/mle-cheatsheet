@@ -2,16 +2,18 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Interview Code Cheatsheet</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 30px; }
-  h1 { text-align: center; color: #333; margin-bottom: 6px; font-size: 24px; }
-  .subtitle { text-align: center; color: #888; margin-bottom: 24px; font-size: 13px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; background: #f5f5f5; padding: 16px 12px; -webkit-text-size-adjust: 100%; }
+  h1 { text-align: center; color: #333; margin-bottom: 6px; font-size: clamp(18px, 5vw, 24px); }
+  .subtitle { text-align: center; color: #888; margin-bottom: 20px; font-size: 13px; }
 
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .full { grid-column: 1 / -1; }
 
-  .card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  .card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
   .card h2 { font-size: 14px; font-weight: bold; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid; }
 
   .s1 h2 { color: #3498db; border-color: #3498db; }
@@ -20,18 +22,24 @@
   .s4 h2 { color: #e67e22; border-color: #e67e22; }
   .s5 h2 { color: #e74c3c; border-color: #e74c3c; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  td, th { padding: 5px 8px; text-align: left; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
-  th { font-weight: bold; color: #555; background: #fafafa; }
-  code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; font-family: monospace; font-size: 11px; }
-  .note { font-size: 11px; color: #e74c3c; font-weight: bold; margin-top: 6px; }
-  pre { background: #f4f4f4; padding: 10px; border-radius: 6px; font-size: 11px; font-family: monospace; line-height: 1.7; overflow-x: auto; }
-  .rule { font-size: 12px; color: #444; margin: 4px 0; line-height: 1.6; }
-  .tag { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 10px; font-weight: bold; color: white; margin-right: 4px; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 280px; }
+  td, th { padding: 7px 8px; text-align: left; border-bottom: 1px solid #f0f0f0; vertical-align: top; line-height: 1.5; }
+  th { font-weight: bold; color: #555; background: #fafafa; font-size: 12px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; font-size: 12px; word-break: break-all; }
+  .note { font-size: 12px; color: #e74c3c; font-weight: bold; margin-top: 8px; }
+  pre { background: #f4f4f4; padding: 12px; border-radius: 6px; font-size: 12px; font-family: 'Courier New', monospace; line-height: 1.7; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .rule { font-size: 13px; color: #444; margin: 5px 0; line-height: 1.6; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; color: white; margin-right: 4px; }
   .tag.green { background: #2ecc71; }
   .tag.red { background: #e74c3c; }
   .tag.blue { background: #3498db; }
   .tag.orange { background: #e67e22; }
+
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    .full { grid-column: 1; }
+  }
 </style>
 </head>
 <body>
@@ -44,7 +52,7 @@
   <!-- SECTION 1: DATA MANIPULATION -->
   <div class="card s1 full">
     <h2>1. Data Manipulation</h2>
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Task</th><th>Code</th><th>Watch out for</th></tr>
       <tr><td>Filter AND</td><td><code>df[(df['col'] > x) & (df['col2'] == 'y')]</code></td><td>Always wrap each condition in ()</td></tr>
       <tr><td>Filter OR</td><td><code>df[(df['col'] == 'US') | (df['col'] == 'EU')]</code></td><td>Use | not or</td></tr>
@@ -59,13 +67,13 @@
       <tr><td>Sort</td><td><code>df.sort_values('col', ascending=False)</code></td><td>ascending=False for high→low</td></tr>
       <tr><td>Sort multiple</td><td><code>df.sort_values(['a','b'], ascending=[True, False])</code></td><td>—</td></tr>
       <tr><td>Change type</td><td><code>df['col'] = df['col'].astype('float')</code></td><td>'float', 'int', 'bool', 'str'</td></tr>
-    </table>
+    </table></div>
   </div>
 
   <!-- SECTION 2: FEATURE ENGINEERING -->
   <div class="card s2">
     <h2>2. Feature Engineering</h2>
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Task</th><th>Code</th></tr>
       <tr><td>Binary encode</td><td><code>df['col'].map({'yes':1,'no':0})</code></td></tr>
       <tr><td>One-hot encode</td><td><code>pd.get_dummies(df, columns=['col'])</code></td></tr>
@@ -75,7 +83,7 @@
       <tr><td>StandardScaler</td><td><code>scaler.fit_transform(X_train)</code></td></tr>
       <tr><td>MinMaxScaler</td><td><code>scaler.transform(X_test)</code></td></tr>
       <tr><td>Binning</td><td><code>pd.cut(df['col'], bins=[0,200,400,float('inf')], labels=['low','mid','high'])</code></td></tr>
-    </table>
+    </table></div>
     <div class="note">⚠ Always flag nulls BEFORE filling!</div>
     <div class="note">⚠ fit_transform on TRAIN only, transform on test!</div>
   </div>
@@ -83,7 +91,7 @@
   <!-- ENCODING DECISIONS -->
   <div class="card s2">
     <h2>2. Feature Engineering — Key Decisions</h2>
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Situation</th><th>Use</th><th>Why</th></tr>
       <tr><td>2 categories</td><td><code>map()</code></td><td>Simple, one column</td></tr>
       <tr><td>3-10 categories</td><td><code>get_dummies()</code></td><td>Low cardinality, safe</td></tr>
@@ -94,7 +102,7 @@
       <tr><td>Fill categorical null</td><td>mode()[0]</td><td>Most common value</td></tr>
       <tr><td>Tree models</td><td>No scaling needed</td><td>Split on thresholds, not distance</td></tr>
       <tr><td>Linear/KNN/NN</td><td>Scale required</td><td>Sensitive to magnitude</td></tr>
-    </table>
+    </table></div>
   </div>
 
   <!-- SECTION 3: FULL PIPELINE -->
@@ -146,7 +154,7 @@ importance = pd.DataFrame({
   <!-- SECTION 4: METRICS -->
   <div class="card s4">
     <h2>4. Evaluation Metrics</h2>
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Metric</th><th>Formula</th><th>Use when</th></tr>
       <tr><td><b>Accuracy</b></td><td>(TP+TN)/total</td><td>Balanced classes only</td></tr>
       <tr><td><b>Precision</b></td><td>TP/(TP+FP)</td><td>False alarms costly</td></tr>
@@ -156,7 +164,7 @@ importance = pd.DataFrame({
       <tr><td><b>MAE</b></td><td>avg|actual-pred|</td><td>Regression, easy to explain</td></tr>
       <tr><td><b>RMSE</b></td><td>√avg(actual-pred)²</td><td>Regression, punish big errors</td></tr>
       <tr><td><b>R²</b></td><td>1-(model/baseline err)</td><td>Regression, overall quality</td></tr>
-    </table>
+    </table></div>
     <div class="note">⚠ ROC-AUC uses y_prob, all others use y_pred!</div>
     <div class="note">⚠ 0.5 AUC = random, 1.0 = perfect</div>
   </div>
@@ -164,7 +172,7 @@ importance = pd.DataFrame({
   <!-- SECTION 5: CONCEPTS -->
   <div class="card s4">
     <h2>4. Key Concepts</h2>
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Concept</th><th>One-liner answer</th></tr>
       <tr><td>Overfitting</td><td>High train, low test accuracy → reduce complexity, add regularization</td></tr>
       <tr><td>Underfitting</td><td>Both train + test low → increase complexity, add features</td></tr>
@@ -176,7 +184,7 @@ importance = pd.DataFrame({
       <tr><td>XGBoost vs LR</td><td>Start with LR (simple), upgrade to XGBoost if needed (non-linear)</td></tr>
       <tr><td>High cardinality</td><td>50+ categories → target encoding, not get_dummies</td></tr>
       <tr><td>Lower threshold</td><td>Increases recall, decreases precision (quick fix before retraining)</td></tr>
-    </table>
+    </table></div>
   </div>
 
   <!-- SECTION 6: PRODUCTION -->
